@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>ModalDialog</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+	<script type="text/javascript">
+	    //是在dom加载完后执行的脚本
+		window.onload = function (){
+			
+			var parentWindow;
+			if(window.opener){//使用open打开方式
+				parentWindow = window.opener.parent;
+			} else {//使用modalDialog方式打开
+				parentWindow = window.dialogArguments;
+			}
+			
+			var leftSelect = document.getElementById("leftSelect");
+			var rightSelect = document.getElementById("rightSelect");
+			//回显右边下拉框中的选项
+			var str = parentWindow.document.getElementsByTagName("span")[0].innerHTML;
+			var optionArray = str.split("，");
+			//将左边下拉框中对应的值删除，并将值加入右边下拉框
+			for(var i = 0; i < optionArray.length; i++){
+				for(var j = 0; j < leftSelect.options.length; j++){
+					if(optionArray[i] == leftSelect.options[j].text){
+						leftSelect.options.remove(j);//删除左边同样名称的选项
+						var opt = document.createElement("option");
+						opt.text = optionArray[i];
+						rightSelect.appendChild(opt);
+					}
+				}
+			}
+			
+			//部分右移
+			document.getElementById("btn2Right").onclick = function (){
+				//（① 获取到左边选中的选项  ② 将获取到的选项添加到右边的下拉框中）
+				var leftSelect = document.getElementById("leftSelect");
+				var rightSelect = document.getElementById("rightSelect");
+				while(leftSelect.selectedIndex > -1){
+					var opt = document.createElement("option");
+					opt.text = leftSelect.options[leftSelect.selectedIndex].text;
+					//将新选项设置到右边下拉框中
+					rightSelect.appendChild(opt);
+					//删除左边对应选中的选项
+					leftSelect.options.remove(leftSelect.selectedIndex);
+				}
+			}
+			//全部右移
+			document.getElementById("btn2AllRight").onclick = function (){
+				//（① 获取到左边所有的选项  ② 将获取到的选项添加到右边的下拉框中）
+				var leftSelect = document.getElementById("leftSelect");
+				var rightSelect = document.getElementById("rightSelect");
+				while(leftSelect.length > 0){
+					var opt = document.createElement("option");
+					opt.text = leftSelect.options[0].text;
+					//将新选项设置到右边下拉框中
+					rightSelect.appendChild(opt);
+					//删除左边对应选中的选项
+					leftSelect.options.remove(0);
+				}
+			}
+			//部分左移
+			document.getElementById("btn2Left").onclick = function (){
+				//（① 获取到右边选中的选项  ② 将获取到的选项添加到左边的下拉框中）
+				var leftSelect = document.getElementById("leftSelect");
+				var rightSelect = document.getElementById("rightSelect");
+				while(rightSelect.selectedIndex > -1){
+					var opt = document.createElement("option");
+					opt.text = rightSelect.options[rightSelect.selectedIndex].text;
+					//将新选项设置到右边下拉框中
+					leftSelect.appendChild(opt);
+					//删除左边对应选中的选项
+					rightSelect.options.remove(rightSelect.selectedIndex);
+				}
+			}
+			//全部左移
+			document.getElementById("btn2AllLeft").onclick = function (){
+				//（① 获取到右边所有的选项  ② 将获取到的选项添加到左边的下拉框中）
+				var leftSelect = document.getElementById("leftSelect");
+				var rightSelect = document.getElementById("rightSelect");
+				while(rightSelect.length > 0){
+					var opt = document.createElement("option");
+					opt.text = rightSelect.options[0].text;
+					//将新选项设置到右边下拉框中
+					leftSelect.appendChild(opt);
+					//删除左边对应选中的选项
+					rightSelect.options.remove(0);
+				}
+			}
+			//确定
+			document.getElementById("btnConfirm").onclick = function (){
+				//（① 获取到右边所有的选项  ② 将获取到的选项设置回父窗口 ③关闭子窗口）
+				var rightSelect = document.getElementById("rightSelect");
+				var str = "";
+				for(var i = 0; i < rightSelect.length; i++){
+					if(str != ""){//非第一个选项值
+						str += "，" + rightSelect.options[i].text ;
+					} else {//第一个选项值
+						str = rightSelect.options[i].text;
+					}
+				}
+				//设置父窗口中特定位置的值
+				parentWindow.document.getElementsByTagName("span")[0].innerHTML = str;
+				
+				//关闭当前窗口
+				window.close();
+			}
+			
+		}
+	</script>
+  </head>
+  
+  <body>
+    <table width="100%">
+    	<tr>
+    		<td width="40%" align="center">
+    			<select style="width:70%;" id="leftSelect" multiple="multiple" size="12">
+    				<option>Java - EE 学科</option>
+    				<option>Java - Android 学科</option>
+    				<option>C 学科</option>
+    				<option>C++ 学科</option>
+    				<option>IOS 学科</option>
+    				<option>.Net 学科</option>
+    				<option>PHP 学科</option>
+    				<option>网页平面 学科</option>
+    			</select>
+    		</td>
+    		<td align="center">
+    			<input type="button" id="btn2Right" value=">"><br><br>
+    			<input type="button" id="btn2AllRight" value=">>"><br><br><br>
+    			<input type="button" id="btn2Left" value="<"><br><br>
+    			<input type="button" id="btn2AllLeft" value="<<">
+    		</td>
+    		<td width="40%" align="center">
+    			<select style="width:70%;" id="rightSelect" multiple="multiple" size="12">
+    			</select>
+    		</td>
+    	</tr>
+    	<tr>
+    		<td colspan="3" height="10px"></td>
+    	</tr>
+    	<tr>
+    		<td colspan="3" align="center">
+    			<input type="button" id="btnConfirm" value="确定"> &nbsp;&nbsp;
+    			<input type="button" value="关闭" onclick="window.close()">
+    		</td>
+    	</tr>
+    </table>
+  </body>
+</html>
