@@ -1,0 +1,11 @@
+function myFunction(){
+  var x;
+  var r = confirm("message这里写对话框要显示的内容");
+  if (r==true){
+    x="你按下了"确定"按钮";
+  }
+  else {
+     x="你按下了"取消"按钮";
+  }
+  docunment.getElementByElement(span).innerHTML=x;
+}
