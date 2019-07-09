@@ -1,0 +1,13 @@
+/** 
+ * 监听打开的弹窗，关闭后刷新页面 
+ */  
+function openWin(url,text,winInfo){  
+    var winObj = window.open(url,text,winInfo);  
+    var loop = setInterval(function() {       
+        if(winObj.closed) {      
+            clearInterval(loop);      
+            //alert('closed');      
+            parent.location.reload();   
+        }      
+    }, 1);     
+}  
